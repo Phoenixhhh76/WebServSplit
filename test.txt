@@ -1,0 +1,34 @@
+# comments in English: run server
+./webserv config/config.conf
+
+# 1) GET index
+curl -i http://127.0.0.1:8080/
+
+# 2) Autoindex list
+curl -i http://127.0.0.1:8080/files/
+
+# 3) 404 page
+curl -i http://127.0.0.1:8080/does-not-exist
+
+# 4) Redirect
+curl -i http://127.0.0.1:8080/go
+
+# 5) DELETE a file
+touch wwwroot/files/tmp.txt
+curl -i -X DELETE http://127.0.0.1:8080/files/tmp.txt
+curl -i http://127.0.0.1:8080/files/tmp.txt # should be 404
+
+# 6) POST upload
+echo "hello upload" > /tmp/u.txt
+curl -i -X POST --data-binary @/tmp/u.txt http://127.0.0.1:8080/upload/new.txt
+ls -l wwwroot/uploads/
+
+# 7) CGI GET
+curl -i "http://127.0.0.1:8080/cgi/echo.py?x=42"
+
+# 8) CGI POST
+curl -i -X POST -H "Content-Type: text/plain" --data "abc=123" \
+     http://127.0.0.1:8080/cgi/echo.py
+
+# 9) Host-based server selection
+curl -i -H "Host: alt.local" http://127.0.0.1:8081/
